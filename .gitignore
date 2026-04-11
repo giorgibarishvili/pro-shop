@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Next.js
+app/frontend/.next/
+app/frontend/out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (if backend added later)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build
+dist/
+build/
+
+# Debug
+npm-debug.log*
+
+# Vercel
+.vercel
+
+# Supabase
+supabase/.temp/
