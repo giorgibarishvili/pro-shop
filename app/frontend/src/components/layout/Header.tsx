@@ -6,11 +6,18 @@ import {
   BarbellIcon,
   ListIcon,
   ShoppingCartIcon,
-  MagnifyingGlassIcon,
   XIcon,
-  CaretDownIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import SearchBar from "@/components/search/SearchBar";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,7 +25,13 @@ const navLinks = [
   { href: "/sale", label: "Sale" },
 ];
 
-export default function Header() {
+type Category = {
+  name: string;
+  slug: string;
+  description: string | null;
+};
+
+export default function Header({ categories }: { categories: Category[] }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -57,27 +70,56 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            {/* Categories dropdown — just the trigger for now */}
-            <div className="relative">
-              <Link
-                href="/categories"
-                className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-              >
-                Categories
-                <CaretDownIcon size={14} weight="bold" />
-              </Link>
-            </div>
+            {/* Categories dropdown */}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent! px-3 py-2 text-sm font-medium text-white/80! hover:bg-white/10! hover:text-white! focus:bg-white/10! focus:text-white! data-popup-open:bg-white/10! data-popup-open:text-white! data-open:bg-white/10! data-open:text-white!">
+                    Categories
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="w-160 p-3">
+                    <ul className="grid grid-cols-2 gap-1">
+                      {categories.map((cat) => (
+                        <li key={cat.slug}>
+                          <NavigationMenuLink
+                            className="flex-col! items-start! gap-0.5!"
+                            render={
+                              <Link href={`/categories/${cat.slug}`}>
+                                <div className="text-sm font-medium leading-tight">
+                                  {cat.name}
+                                </div>
+                                {cat.description && (
+                                  <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">
+                                    {cat.description}
+                                  </p>
+                                )}
+                              </Link>
+                            }
+                          />
+                        </li>
+                      ))}
+                      <li className="col-span-2 mt-1 border-t pt-2">
+                        <NavigationMenuLink
+                          render={
+                            <Link
+                              href="/categories"
+                              className="text-sm font-medium"
+                            >
+                              Browse all categories →
+                            </Link>
+                          }
+                        />
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
           {/* Right: Search + Cart + Account */}
           <div className="flex items-center gap-2">
-            {/* Search button — placeholder, will become full search bar */}
-            <button
-              className="cursor-pointer rounded-md p-2 text-white/80 hover:bg-white/10 hover:text-white"
-              aria-label="Search"
-            >
-              <MagnifyingGlassIcon size={20} />
-            </button>
+            <SearchBar />
 
             {/* Cart */}
             <Link
@@ -152,12 +194,26 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
+              <div className="my-2 border-t border-white/10" />
+              <p className="px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-white/40">
+                Categories
+              </p>
+              {categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  href={`/categories/${cat.slug}`}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  {cat.name}
+                </Link>
+              ))}
               <Link
                 href="/categories"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/10 hover:text-white"
               >
-                Categories
+                Browse all →
               </Link>
 
               <div className="my-3 border-t border-white/10" />
